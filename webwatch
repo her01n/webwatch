@@ -1,0 +1,78 @@
+#!/usr/bin/ruby
+
+require 'fileutils'
+require 'securerandom'
+
+start = Time.now()
+
+def env(name, default)
+    value = ENV[name]
+    if value and value != "" then value else default end
+end 
+version = "0.1"
+config = env("WEBWATCH_CONFIG", "/etc/webwatch")
+dest = env("WEBWATCH_DEST", "/var/lib/webwatch")
+
+print "using configuration directory #{config}\n"
+
+# Execute tests
+success = 0
+failures = []
+log = "/tmp/webwatch#{SecureRandom.hex(6)}.log"
+File.readlines("#{config}/urllist").each do |line|
+    if not line =~ /^#/ then
+        url = line.chomp
+        if not url.empty? then
+            print "testing #{url}"
+            if not system("curl --location #{url} --silent --show-error 2>#{log} >#{log}") then
+                print " ... failed\n"
+                failures << { url: url, output: File.read(log) }
+            else 
+                success = success + 1
+                print " ... ok\n"
+            end
+        end
+    end
+end
+File.delete(log)
+done = Time.now()
+
+# Write report file
+FileUtils.mkdir_p dest
+status = "#{dest}/status"
+print "writing status to #{status}\n"
+def tests(n)
+    "#{n} #{n == 1 ? "test" : "tests"}"
+end
+File.open(status, "w") do |file|
+    file.write("Webwatch version #{version}\n")
+    file.write("Test started at #{start}.\n");
+    file.write("Time elapsed %.2f seconds.\n" % (done - start))
+    if failures.empty? then
+        file.write("#{tests(success)} OK.\n")
+    else
+        file.write("#{tests(failures.length)} failed.\n")
+        failures.each do |failure|
+            file.write("\n")
+            file.write("URL: #{failure[:url]}\n")
+            file.write("Output:\n")
+            file.write(failure[:output])
+        end
+    end
+end
+
+# Send the mail in case of failure
+if not failures.empty? then
+    msmtp = "#{config}/msmtp.cfg"
+    admin = begin File.read("#{config}/admin").chomp rescue "" end
+    if not File.exist? msmtp then
+        print "not sending mail because mail configuration #{msmtp} does not exist\n"
+    elsif admin == "" then
+        print "not sending mail because email in #{config}/admin is not present\n"
+    else 
+        print "sending mail to #{admin}\n"
+        system("(echo 'To: #{admin}' && echo 'Subject: Webwatch Test Failure' && echo && cat #{status}) | msmtp -C #{msmtp} #{admin}")
+    end
+end
+
+

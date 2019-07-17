@@ -1,0 +1,7 @@
+[Unit]
+Description=Webwatch automatic web page tester
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/webwatch
+

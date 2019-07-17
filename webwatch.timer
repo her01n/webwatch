@@ -1,0 +1,9 @@
+[Unit]
+Description=Webwatch automatic web page tester
+
+[Timer]
+OnCalendar=hourly
+
+[Install]
+WantedBy=timers.target
+
