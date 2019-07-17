@@ -37,11 +37,15 @@ from username@domain.com
 
 The file needs to be unreadable by other users. Fix it with:
 
-   # chmod go-rw /etc/webwatch/msmtp.cfg
+```
+# chmod go-rw /etc/webwatch/msmtp.cfg
+```
 
 You can test the mail with command:
 
-   # echo hello | msmtp -C ~/.config/webwatch/msmtp.cfg yourmail@mail.com
+```
+# echo hello | msmtp -C ~/.config/webwatch/msmtp.cfg yourmail@mail.com
+```
 
 Write the mail address of the recipient in file /etc/webwatch/admin.
 
