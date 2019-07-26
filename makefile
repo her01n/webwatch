@@ -4,4 +4,4 @@ install:
 	mkdir -p /etc/webwatch
 	systemctl daemon-reload
 	systemctl enable webwatch.timer
-	systemctl start webwatch.service
+	systemctl start webwatch.timer

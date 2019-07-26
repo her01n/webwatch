@@ -3,7 +3,7 @@ send a mail to admin in case of problems.
 
 # Requirements
 
-Install ruby, msmtp and curl packages.
+Install curl, make, msmtp and ruby packages.
 
 # URLs
 
@@ -54,3 +54,8 @@ Write the mail address of the recipient in file /etc/webwatch/admin.
 Install the script by executing 'make install' in the project directory.
 This would also enable the systemd timer to execute the script periodically. 
 You can check the status of last test run in /var/lib/webwatch/status.
+
+To manualy trigger the check, run
+
+   $ systemctl start webwatch
+
