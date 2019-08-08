@@ -79,4 +79,10 @@ if not failures.empty? then
     end
 end
 
+# Synchronize the logs with remote site if specified
+remote = begin File.read("#{config}/remote").chomp rescue "" end
+if remote != "" then
+    print "uploading output"
+    system("rsync --archive --update #{dest}/ #{remote}")
+end
 
