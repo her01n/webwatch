@@ -1,4 +1,5 @@
 http://wikipedia.org
-# This should fail with name not resolved
+# This would fail with connection refused
+# It also can fail with name not resolved, depends on dns server i guess
 https://asdfqwfeqwefasdcvavr.com
 
