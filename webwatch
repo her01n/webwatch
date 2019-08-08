@@ -18,23 +18,27 @@ print "using configuration directory #{config}\n"
 # Execute tests
 success = 0
 failures = []
-log = "/tmp/webwatch#{SecureRandom.hex(6)}.log"
-File.readlines("#{config}/urllist").each do |line|
-    if not line =~ /^#/ then
-        url = line.chomp
-        if not url.empty? then
-            print "testing #{url}"
-            if not system("curl --fail --location #{url} --silent --show-error 2>#{log} >#{log}") then
-                print " ... failed\n"
-                failures << { url: url, output: File.read(log) }
-            else 
-                success = success + 1
-                print " ... ok\n"
+out = "/tmp/webwatch#{SecureRandom.hex(6)}.out"
+File.open("#{dest}/log", "a") do |log|
+    File.readlines("#{config}/urllist").each do |line|
+        if not line =~ /^#/ then
+            url = line.chomp
+            if not url.empty? then
+                print "testing #{url}"
+                if not system("curl --fail --location #{url} --silent --show-error 2>#{out} >#{out}") then
+                    log.puts "#{Time.now()} failure #{url}"
+                    print " ... failed\n"
+                    failures << { url: url, output: File.read(out) }
+                else
+                    log.puts "#{Time.now()} success #{url}"
+                    success = success + 1
+                    print " ... ok\n"
+                end
             end
         end
     end
 end
-File.delete(log)
+File.delete(out)
 done = Time.now()
 
 # Write report file
