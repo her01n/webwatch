@@ -41,8 +41,8 @@ if ! grep -i "fail" test/status ; then
     echo "failure status not reported"
     false
 fi
-if ! grep -i "refused" test/status; then
-    echo "connection refused should be reported"
+if ! grep -E "(refused|resolve)" test/status; then
+    echo "'connection refused' or 'name not resolved' should be reported"
     false
 fi
 if ! grep "asdf" test/log | grep -i "fail" ; then
@@ -68,6 +68,16 @@ if ! grep -i "fail" test/status ; then
 fi
 if ! grep -i "404" test/status; then
     echo "error code 404 should be reported"
+    false
+fi
+
+echo
+echo "Test create the output directory"
+rm -rf test/output
+export WEBWATCH_DEST=$(realpath test/output)
+env WEBWATCH_CONFIG=$(realpath test/pass/) ./webwatch
+if [ ! -d test/output ]; then
+    echo "output directory is not created"
     false
 fi
 

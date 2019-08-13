@@ -19,6 +19,7 @@ print "using configuration directory #{config}\n"
 success = 0
 failures = []
 out = "/tmp/webwatch#{SecureRandom.hex(6)}.out"
+FileUtils.mkdir_p dest
 File.open("#{dest}/log", "a") do |log|
     File.readlines("#{config}/urllist").each do |line|
         if not line =~ /^#/ then
@@ -42,7 +43,6 @@ File.delete(out)
 done = Time.now()
 
 # Write report file
-FileUtils.mkdir_p dest
 status = "#{dest}/status"
 print "writing status to #{status}\n"
 def tests(n)
