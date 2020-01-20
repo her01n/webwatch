@@ -28,11 +28,10 @@ The format of the file is described in msmtp manual. An example for mail.com ser
 ```
 auth on
 tls on
-host smtp.mail.com
-port 587
-user username@domain.com
+host smtp.gmail.com
+user username@gmail.com
 password <password>
-from username@domain.com
+from Your Name
 ```
 
 The file needs to be unreadable by other users. Fix it with:
@@ -44,7 +43,7 @@ The file needs to be unreadable by other users. Fix it with:
 You can test the mail with command:
 
 ```
-# echo hello | msmtp -C ~/.config/webwatch/msmtp.cfg yourmail@mail.com
+# echo hello | sudo msmtp -C /etc/webwatch/msmtp.cfg yourmail@mail.com
 ```
 
 Write the mail address of the recipient in file /etc/webwatch/admin.
@@ -57,5 +56,5 @@ You can check the status of last test run in /var/lib/webwatch/status.
 
 To manualy trigger the check, run
 
-   $ systemctl start webwatch
+    $ systemctl start webwatch
 
