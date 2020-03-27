@@ -7,7 +7,7 @@ echo
 echo "Test test pass"
 rm -rf test/status
 echo "prev logs" > test/log
-env WEBWATCH_CONFIG=$(realpath test/pass/) ./webwatch
+env WEBWATCH_CONFIG=$(realpath test/pass.config) ./webwatch
 if [ ! -f test/status ]; then
     echo "Status file not generated"
     false
@@ -28,7 +28,7 @@ fi
 echo
 echo "Test failure connection refused"
 rm -rf test/status test/log
-env WEBWATCH_CONFIG=$(realpath test/failure/) ./webwatch
+env WEBWATCH_CONFIG=$(realpath test/failure.config) ./webwatch
 if [ ! -f test/status ]; then
     echo "Status file not generated"
     false
@@ -53,7 +53,7 @@ fi
 echo
 echo "Test failure server responds 404"
 rm -rf test/status
-env WEBWATCH_CONFIG=$(realpath test/errorcode/) ./webwatch
+env WEBWATCH_CONFIG=$(realpath test/errorcode.config) ./webwatch
 if [ ! -f test/status ]; then
     echo "Status file not generated"
     false
@@ -75,7 +75,7 @@ echo
 echo "Test create the output directory"
 rm -rf test/output
 export WEBWATCH_DEST=$(realpath test/output)
-env WEBWATCH_CONFIG=$(realpath test/pass/) ./webwatch
+env WEBWATCH_CONFIG=$(realpath test/pass.config) ./webwatch
 if [ ! -d test/output ]; then
     echo "output directory is not created"
     false

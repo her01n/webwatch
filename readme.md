@@ -1,52 +1,44 @@
 This is a script to periodically check the availability of a web page and
 send a mail to admin in case of problems.
 
-# Requirements
+## Requirements
 
 Install curl, make, msmtp and ruby packages.
 
-# URLs
+## Configuration
 
-The list of web pages to test is specified in file /etc/webwatch/urllist.
-The file contains a list of full urls, each on a separate line. Lines starting with '#' are ignored.
-'http', 'https' and 'ftp' urls are supported. For example:
+Create a configuration file in /etc/webwatch.config.
+Lines starting with '#' and empty lines are ignored.
+At least one url must be specified.
 
-```
-# This is a comment
-http://web-page.com/
-https://www.web-page.com/
-```
+List of configuration options:
 
-Test would follow redirections, including across the protocols, so you can add 'http' url to test
-if it would correctly redirect to 'https'.
+- **url = http://host/path**
 
-# Mail
+  Specify an url to test.
+  May be specified more than once, supported protocols are 'http', 'https' and 'ftp'.
+  Test would follow redirections, including across the protocols, so you can add 'http' url to test
+  if it would correctly redirect to 'https'.
 
-Mail configuration is read from file /etc/webwatch/msmtp.cfg.
-The format of the file is described in msmtp manual. An example for mail.com service:
+- **admin = admin@example.com**
 
-```
-auth on
-tls on
-host smtp.gmail.com
-user username@gmail.com
-password <password>
-from Your Name
-```
+  Mail address that would be sent an e-mail in case of a test failure.
 
-The file needs to be unreadable by other users. Fix it with:
+- **smtp-host = smtp.gmail.com**
 
-```
-# chmod go-rw /etc/webwatch/msmtp.cfg
-```
+  Host of SMTP server.
 
-You can test the mail with command:
+- **smtp-user = your.name@gmail.com**
 
-```
-# echo hello | sudo msmtp -C /etc/webwatch/msmtp.cfg yourmail@mail.com
-```
+  SMTP Username.
 
-Write the mail address of the recipient in file /etc/webwatch/admin.
+- **smtp-password = pass**
+
+  SMTP Password. Password should be written as is (not in quotes).
+
+You can test email configuration with command:
+
+    $ ./webwatch --test-mail
 
 # Installation
 
