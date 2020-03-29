@@ -48,7 +48,6 @@ rescue => e
 end
 print "read configuration file #{config}: ok\n"
 
-# Send email
 def send_mail(file)
   if not $admin or $admin == "" then
     print "not sending mail because admin email is not configured\n"
@@ -63,15 +62,15 @@ def send_mail(file)
       file.write("To: #{$admin}\n")
       file.write("From: #{$smtp_user}\n")
       file.write("Subject: Webwatch Test Failure\n")
-      file.write("\n")
-      file.write(File.read(file))
+      file.write("\n\n")
     end
-    system("cat #{mail_file} | msmtp --from=#{$smtp_user} --auth --tls \"--host=#{$smtp_host}\" \"--user=#{$smtp_user}\" \"--passwordeval=cat #{pass_file}\" #{$admin}")
+    system("cat #{mail_file} #{file} | msmtp --from=#{$smtp_user} --auth --tls \"--host=#{$smtp_host}\" \"--user=#{$smtp_user}\" \"--passwordeval=cat #{pass_file}\" #{$admin}")
     File.delete pass_file
     File.delete mail_file
   end
 end
 
+# Test send_mail function
 if ARGV[0] == "--test-mail" then
   File.write("/tmp/testmail", "This is a test email")
   send_mail("/tmp/testmail")
@@ -128,12 +127,4 @@ end
 if not failures.empty? then
   send_mail(status)
 end
-
-# TODO
-# Synchronize the logs with remote site if specified
-# remote = begin File.read("#{config}/remote").chomp rescue "" end
-# if remote != "" then
-#   print "uploading output"
-#   system("rsync --archive --update #{dest}/ #{remote}")
-#end
 
