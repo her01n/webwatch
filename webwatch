@@ -33,7 +33,7 @@ begin
       $smtp_host = $1
     elsif line =~ /^\s*smtp-user\s*=\s*(.*)\s*$/ then
       $smtp_user = $1
-    elsif line =~ /^\s*smtp-password\s*=\s*(.*)\s*$/ then
+    elsif line =~ /^\s*smtp-password\s*=\s*(\S*)\s*$/ then
       $smtp_password = $1
     else
       raise "parse error on line #{n}"
@@ -64,7 +64,7 @@ def send_mail(file)
       file.write("Subject: Webwatch Test Failure\n")
       file.write("\n\n")
     end
-    system("cat #{mail_file} #{file} | msmtp --from=#{$smtp_user} --auth --tls \"--host=#{$smtp_host}\" \"--user=#{$smtp_user}\" \"--passwordeval=cat #{pass_file}\" #{$admin}")
+    system("cat #{mail_file} #{file} | msmtp --from=#{$smtp_user} --auth --tls --tls-starttls=off \"--host=#{$smtp_host}\" \"--user=#{$smtp_user}\" \"--passwordeval=cat #{pass_file}\" #{$admin}")
     File.delete pass_file
     File.delete mail_file
   end
@@ -74,6 +74,7 @@ end
 if ARGV[0] == "--test-mail" then
   File.write("/tmp/testmail", "This is a test email")
   send_mail("/tmp/testmail")
+  File.delete("/tmp/testmail")
   exit(0)
 end
 

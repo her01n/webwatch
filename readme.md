@@ -40,6 +40,11 @@ You can test email configuration with command:
 
     $ ./webwatch --test-mail
 
+The password is kept in plain text, it is advisable to set access to owner only.
+
+    # chown root:root /etc/webwatch.config
+    # chmod go-rwx /etc/webwatch.config
+
 # Installation
 
 Install the script by executing 'make install' in the project directory.
