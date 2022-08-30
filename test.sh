@@ -28,7 +28,9 @@ fi
 echo
 echo "Test failure connection refused"
 rm -rf test/status test/log
-env WEBWATCH_CONFIG=$(realpath test/failure.config) ./webwatch
+TMP_FAILURE_CONFIG=/tmp/failure.config
+cat test/failure.config | awk '{gsub("%RANDOM%", "'$(pwgen)'")}1' > $TMP_FAILURE_CONFIG
+env WEBWATCH_CONFIG=$TMP_FAILURE_CONFIG ./webwatch
 if [ ! -f test/status ]; then
     echo "Status file not generated"
     false

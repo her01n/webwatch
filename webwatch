@@ -123,7 +123,6 @@ File.open(status, "w") do |file|
   end
 end
 
-
 # Send the mail in case of failure
 if not failures.empty? then
   send_mail(status)
